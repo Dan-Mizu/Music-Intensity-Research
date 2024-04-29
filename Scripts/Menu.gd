@@ -9,9 +9,6 @@ func _on_options_pressed():
 func _on_quit_pressed():
 	get_tree().quit()
 
-
-
-
 func _on_play_mouse_entered():
 	$ButtonSound.play()
 	pass # Replace with function body.

@@ -36,7 +36,7 @@ func _ready():
 	timer.timeout.connect(spawn_target)
 	timer.start()
 	end_scene.visible = false
-	
+
 func _on_target_hide(target):
 	active_target_locs.pop_front()
 	target_locs.append(target)
@@ -46,7 +46,7 @@ func _on_target_hide(target):
 	if spawned_targets == max_target_count and target == final_target:
 		# End the game
 		end_game()
-		
+
 func spawn_target():
 	# Create a new target instance
 	var target = target_scene.instantiate()
@@ -96,9 +96,9 @@ func end_game():
 	end = true
 	end_scene.visible = true
 	end_scene.targets_hit.text = "Targets hit: " + str(num_hit) + "/"  + str(spawned_targets)
-	accuracy = (100*num_hit) / maxi(1, clicks)
+	accuracy = (100 * num_hit) / float(maxi(1, clicks))
 	end_scene.accuracy.text = "Accuracy: " + str(accuracy)  + "%"
-	
+
 func _unhandled_input(event):
 	if (end == true):
 		return
@@ -110,9 +110,6 @@ func _unhandled_input(event):
 					target_hit.play()
 					return
 			target_miss.play()	
-
-	
-
 
 func _on_control_resized():
 	pass # Replace with function body.
