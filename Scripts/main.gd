@@ -12,7 +12,7 @@ const TARGET_SCENE = "res://Scenes/target.tscn"
 
 @onready var timer: Timer = $TargetTimer
 # Load the end scene
-@onready var end_scene = $CanvasLayer/EndMenu
+@onready var end_scene: EndMenu = $CanvasLayer/EndMenu
 # Load the target scene
 @onready var target_scene = load(TARGET_SCENE)
 # Get the screen size
@@ -22,6 +22,8 @@ const TARGET_SCENE = "res://Scenes/target.tscn"
 # The array of active target locs
 @onready var active_target_locs = []
 @onready var target_locs = []
+# List of reaction times for each *hit* target
+@onready var reaction_times: Array[int] = []
 # Number of targets spawned
 @onready var spawned_targets = 0
 @onready var accuracy = 0.0
@@ -37,11 +39,18 @@ func _ready():
 	timer.start()
 	end_scene.visible = false
 
-func _on_target_hide(target):
+func _on_target_hide(target: Target):
 	active_target_locs.pop_front()
 	target_locs.append(target)
+
+	# Add to hit count
 	if target.hit:
 		num_hit += 1
+
+		# Store reaction time
+		if target.reaction_time:
+			reaction_times.push_back(target.reaction_time)
+
 	# Check if there are no more targets left
 	if spawned_targets == max_target_count and target == final_target:
 		# End the game
@@ -95,9 +104,26 @@ func getSpawnLoc(radius) -> Vector2:
 func end_game():
 	end = true
 	end_scene.visible = true
+
+	# display targets hit
 	end_scene.targets_hit.text = "Targets hit: " + str(num_hit) + "/"  + str(spawned_targets)
+
+	# display miss count
+	end_scene.misses.text = "Misses: " + str(clicks - num_hit)
+
+	# calculate and display accuracy
 	accuracy = (100 * num_hit) / float(maxi(1, clicks))
 	end_scene.accuracy.text = "Accuracy: " + str(accuracy)  + "%"
+
+	# calculate and display average reaction time
+	if reaction_times.size() > 0:
+		var reaction_time_sum = 0
+		for time in reaction_times:
+			reaction_time_sum += time
+		var average_reaction_time = reaction_time_sum / float(reaction_times.size())
+		end_scene.reaction_time.text = "Avg. Reaction Time: " + str(average_reaction_time)  + "ms"
+	else:
+		end_scene.reaction_time.hide()
 
 func _unhandled_input(event):
 	if (end == true):
@@ -109,7 +135,7 @@ func _unhandled_input(event):
 				if target.visible and target.mouse_hover:
 					target_hit.play()
 					return
-			target_miss.play()	
+			target_miss.play()
 
 func _on_control_resized():
 	pass # Replace with function body.

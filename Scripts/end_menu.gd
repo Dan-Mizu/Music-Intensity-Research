@@ -1,7 +1,10 @@
 extends Control
+class_name EndMenu
 
-@onready var accuracy = $CenterContainer/VBoxContainer/Accuracy
-@onready var targets_hit = $CenterContainer/VBoxContainer/TargetsHit
+@onready var targets_hit: Label = %TargetsHit
+@onready var misses: Label = %Misses
+@onready var accuracy: Label = %Accuracy
+@onready var reaction_time: Label = %ReactionTime
 
 func _on_play_again_pressed():
 	get_tree().change_scene_to_file("res://Scenes/main.tscn")
