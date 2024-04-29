@@ -37,7 +37,7 @@ const TARGET_SCENE = "res://Scenes/target.tscn"
 @onready var end = false;
 
 # used as an ID for each data point sent from the client -- possibly not foolproof, but the sample is expected to be ~20 people anyway
-var ip_address: String
+var machine_id: String
 
 func _ready():
 	timer.wait_time = spawn_time
@@ -45,8 +45,8 @@ func _ready():
 	timer.start()
 	end_scene.visible = false
 
-	# get IP
-	ip_address = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
+	# get machine ID
+	machine_id = OS.get_unique_id()
 
 func _on_target_hide(target: Target):
 	active_target_locs.pop_front()
@@ -157,7 +157,7 @@ func end_game():
 			[
 				{
 					"project_version": ProjectSettings.get_setting("application/config/version"),
-					"ip": str(ip_address),
+					"machine_id": machine_id,
 					"music_type": "Intense",
 					"targets_hit": num_hit,
 					"misses": misses,
