@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Aim-trainer"
+config/version="0.0.1a"
 run/main_scene="res://Scenes/main_menu.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 
@@ -19,11 +20,16 @@ config/features=PackedStringArray("4.2", "Forward Plus")
 Settings="*res://Scripts/settings.gd"
 Music="*res://Scenes/music.tscn"
 Background="*res://Scenes/background.tscn"
+Supabase="*res://addons/supabase/Supabase/supabase.gd"
 
 [display]
 
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/supabase/plugin.cfg")
 
 [filesystem]
 

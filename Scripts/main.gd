@@ -44,7 +44,7 @@ func _ready():
 	end_scene.visible = false
 
 	# get IP
-	ip_address = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),1)
+	ip_address = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
 
 func _on_target_hide(target: Target):
 	active_target_locs.pop_front()
@@ -116,21 +116,40 @@ func end_game():
 	end_scene.targets_hit.text = "Targets hit: " + str(num_hit) + "/"  + str(spawned_targets)
 
 	# display miss count
-	end_scene.misses.text = "Misses: " + str(clicks - num_hit)
+	var misses = clicks - num_hit
+	end_scene.misses.text = "Misses: " + str(misses)
 
 	# calculate and display accuracy
 	accuracy = (100 * num_hit) / float(maxi(1, clicks))
 	end_scene.accuracy.text = "Accuracy: " + str(accuracy)  + "%"
 
 	# calculate and display average reaction time
+	var average_reaction_time
 	if reaction_times.size() > 0:
 		var reaction_time_sum = 0
 		for time in reaction_times:
 			reaction_time_sum += time
-		var average_reaction_time = reaction_time_sum / float(reaction_times.size())
+		average_reaction_time = reaction_time_sum / float(reaction_times.size())
 		end_scene.reaction_time.text = "Avg. Reaction Time: " + str(average_reaction_time)  + "ms"
 	else:
 		end_scene.reaction_time.hide()
+
+	# upload data to database
+	Supabase.database.query(
+		SupabaseQuery.new().from("Data").insert(
+			[
+				{
+					"project_version": ProjectSettings.get_setting("application/config/version"),
+					"ip": str(ip_address),
+					"music_type": "Intense",
+					"targets_hit": num_hit,
+					"misses": misses,
+					"accuracy": accuracy,
+					"average_reaction_time": average_reaction_time
+				}
+			]
+		)
+	)
 
 func _unhandled_input(event):
 	if (end == true):
