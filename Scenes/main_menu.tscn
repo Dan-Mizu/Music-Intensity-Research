@@ -54,6 +54,7 @@ theme_override_styles/hover = ExtResource("3_0tmw0")
 text = "Play"
 
 [node name="Options" type="Button" parent="CenterContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_styles/hover = ExtResource("3_0tmw0")
 text = "Options"
