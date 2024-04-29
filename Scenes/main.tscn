@@ -1,12 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://u7p8h300oxn0"]
+[gd_scene load_steps=7 format=3 uid="uid://u7p8h300oxn0"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_s4ya4"]
 [ext_resource type="PackedScene" uid="uid://d2s1uam1a4gqg" path="res://Scenes/end_menu.tscn" id="2_hrqtk"]
+[ext_resource type="AudioStream" uid="uid://co6leore3v5yw" path="res://Audio/IntenseBGM.ogg" id="2_new4m"]
+[ext_resource type="AudioStream" uid="uid://dcvslwgspcbc7" path="res://Audio/CalmBGM.ogg" id="3_oaiah"]
 [ext_resource type="AudioStream" uid="uid://b8of47efsspec" path="res://Audio/TargetHit.wav" id="3_wckgw"]
 [ext_resource type="AudioStream" uid="uid://dj3oy2blpat35" path="res://Audio/TargetMiss.wav" id="4_4veax"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_s4ya4")
+intense_music = ExtResource("2_new4m")
+calm_music = ExtResource("3_oaiah")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -21,3 +25,6 @@ volume_db = 11.946
 [node name="TargetMiss" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_4veax")
 volume_db = 24.0
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true

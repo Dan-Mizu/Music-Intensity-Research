@@ -10,11 +10,18 @@ extends Node2D
 # The path to the target scene
 const TARGET_SCENE = "res://Scenes/target.tscn"
 
+# References to 
+@export_category("References")
+@export var intense_music: AudioStreamOggVorbis
+@export var calm_music: AudioStreamOggVorbis
+
 @onready var timer: Timer = $TargetTimer
 # Load the end scene
 @onready var end_scene: EndMenu = $CanvasLayer/EndMenu
 # Load the target scene
 @onready var target_scene = load(TARGET_SCENE)
+# Get background music
+@onready var background_music = %BGM
 # Get the screen size
 @onready var screen_size = get_viewport_rect().size
 # The array of target instances
@@ -34,6 +41,7 @@ const TARGET_SCENE = "res://Scenes/target.tscn"
 @onready var final_target = null
 @onready var target_hit = $TargetHit
 @onready var target_miss = $TargetMiss
+@onready var music_type: String
 @onready var end = false;
 
 # used as an ID for each data point sent from the client -- possibly not foolproof, but the sample is expected to be ~20 people anyway
@@ -47,6 +55,18 @@ func _ready():
 
 	# get machine ID
 	machine_id = OS.get_unique_id()
+
+	# determine music to play
+	var rand_type = randi_range(0, 1)
+	if rand_type == 0:
+		music_type = "Intense"
+		background_music.stream = intense_music
+	elif rand_type == 1:
+		music_type = "Calm"
+		background_music.stream = calm_music
+
+	# play music
+	background_music.play()
 
 func _on_target_hide(target: Target):
 	active_target_locs.pop_front()
@@ -158,7 +178,7 @@ func end_game():
 				{
 					"project_version": ProjectSettings.get_setting("application/config/version"),
 					"machine_id": machine_id,
-					"music_type": "Intense",
+					"music_type": music_type,
 					"targets_hit": num_hit,
 					"misses": misses,
 					"accuracy": average_accuracy,
