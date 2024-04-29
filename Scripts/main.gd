@@ -33,11 +33,18 @@ const TARGET_SCENE = "res://Scenes/target.tscn"
 @onready var target_hit = $TargetHit
 @onready var target_miss = $TargetMiss
 @onready var end = false;
+
+# used as an ID for each data point sent from the client -- possibly not foolproof, but the sample is expected to be ~20 people anyway
+var ip_address: String
+
 func _ready():
 	timer.wait_time = spawn_time
 	timer.timeout.connect(spawn_target)
 	timer.start()
 	end_scene.visible = false
+
+	# get IP
+	ip_address = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),1)
 
 func _on_target_hide(target: Target):
 	active_target_locs.pop_front()
