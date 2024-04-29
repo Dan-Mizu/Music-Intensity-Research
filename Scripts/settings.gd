@@ -4,7 +4,7 @@ enum Difficulties {Easy, Normal, Hard, Legendary, Custom}
 var max_target_count
 var spawn_time
 var time_time_to_live
-var difficulty = Difficulties.Normal
+var difficulty = Difficulties.Hard
 
 func _ready():
 	set_difficulty(difficulty)
