@@ -6,6 +6,7 @@ class_name Target
 @onready var hit = false
 @onready var initial_time: int
 @onready var reaction_time: int
+@onready var accuracy: float
 var mouse_hover = false
 
 func _on_input_event(_viewport, event, _shape_idx):
@@ -13,6 +14,9 @@ func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		# Mark as hit
 		hit = true
+
+		# Calculate and store accuracy
+		accuracy = (1 - (collision_shape_2d.global_position.distance_to(get_viewport().get_mouse_position()) / 22)) * 100
 
 		# Calculate and store reaction time
 		reaction_time = Time.get_ticks_msec() - initial_time

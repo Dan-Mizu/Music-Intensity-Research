@@ -24,9 +24,11 @@ const TARGET_SCENE = "res://Scenes/target.tscn"
 @onready var target_locs = []
 # List of reaction times for each *hit* target
 @onready var reaction_times: Array[int] = []
+# List of accuracies for each *hit* target
+@onready var accuracies: Array[float] = []
 # Number of targets spawned
 @onready var spawned_targets = 0
-@onready var accuracy = 0.0
+#@onready var accuracy = 0.0
 @onready var num_hit = 0
 @onready var clicks = 0
 @onready var final_target = null
@@ -53,6 +55,10 @@ func _on_target_hide(target: Target):
 	# Add to hit count
 	if target.hit:
 		num_hit += 1
+
+		# Store accuracy
+		if target.accuracy:
+			accuracies.push_back(target.accuracy)
 
 		# Store reaction time
 		if target.reaction_time:
@@ -118,10 +124,21 @@ func end_game():
 	# display miss count
 	var misses = clicks - num_hit
 	end_scene.misses.text = "Misses: " + str(misses)
+#
+	## calculate and display accuracy
+	#accuracy = (100 * num_hit) / float(maxi(1, clicks))
+	#end_scene.accuracy.text = "Accuracy: " + str(accuracy)  + "%"
 
 	# calculate and display accuracy
-	accuracy = (100 * num_hit) / float(maxi(1, clicks))
-	end_scene.accuracy.text = "Accuracy: " + str(accuracy)  + "%"
+	var average_accuracy
+	if accuracies.size() > 0:
+		var accuracy_sum = 0
+		for target_accuracy in accuracies:
+			accuracy_sum += target_accuracy
+		average_accuracy = accuracy_sum / float(accuracies.size())
+		end_scene.accuracy.text = "Accuracy: " + str(average_accuracy)  + "%"
+	else:
+		end_scene.accuracy.hide()
 
 	# calculate and display average reaction time
 	var average_reaction_time
@@ -144,7 +161,7 @@ func end_game():
 					"music_type": "Intense",
 					"targets_hit": num_hit,
 					"misses": misses,
-					"accuracy": accuracy,
+					"accuracy": average_accuracy,
 					"average_reaction_time": average_reaction_time
 				}
 			]
